@@ -1,0 +1,1842 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- phpMyAdmin XML Dump
+- version 4.9.1
+- https://www.phpmyadmin.net
+-
+- Hôte : localhost
+- Généré le :  lun. 02 sep. 2024 à 14:25
+- Version du serveur :  10.3.39-MariaDB-0+deb10u2
+- Version de PHP :  7.3.31-1~deb10u7
+-->
+
+<pma_xml_export version="1.0" xmlns:pma="https://www.phpmyadmin.net/some_doc_url/">
+    <!--
+    - Structure schemas
+    -->
+    <pma:structure_schemas>
+        <pma:database name="projets_exam-back_cdacosta" collation="utf8_general_ci" charset="utf8">
+            <pma:table name="Account_manage">
+                CREATE TABLE `Account_manage` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `User` int(11) DEFAULT NULL,
+                  `date_token_mail` datetime DEFAULT NULL,
+                  `date_validation_mail` datetime DEFAULT NULL,
+                  `status` enum('active','blocked','invalid') DEFAULT NULL,
+                  `token_reset_mdp` varchar(255) DEFAULT NULL,
+                  `compteur_echec` int(11) DEFAULT 0,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `User` (`User`),
+                  CONSTRAINT `Account_manage_ibfk_1` FOREIGN KEY (`User`) REFERENCES `User` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Category">
+                CREATE TABLE `Category` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `title` varchar(255) DEFAULT NULL,
+                  `image_path` varchar(255) DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Element">
+                CREATE TABLE `Element` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `type` enum('menu','item') DEFAULT NULL,
+                  `size_menu` enum('maxi','normal') DEFAULT NULL,
+                  `size_item` enum('30Cl','50Cl') DEFAULT NULL,
+                  `quantity` int(11) DEFAULT NULL,
+                  `price` decimal(10,2) DEFAULT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=218 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Element_Product">
+                CREATE TABLE `Element_Product` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `Element` int(11) DEFAULT NULL,
+                  `Product` int(11) DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `Element` (`Element`),
+                  KEY `Product` (`Product`),
+                  CONSTRAINT `Element_Product_ibfk_1` FOREIGN KEY (`Element`) REFERENCES `Element` (`id`),
+                  CONSTRAINT `Element_Product_ibfk_2` FOREIGN KEY (`Product`) REFERENCES `Product` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Order">
+                CREATE TABLE `Order` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `number` varchar(255) DEFAULT NULL,
+                  `place_number` int(11) DEFAULT NULL,
+                  `orderType` enum('eatIn','takeOut') DEFAULT NULL,
+                  `amount` decimal(10,2) DEFAULT NULL,
+                  `status` enum('standby','delivered','prepared','canceled','inProgress') DEFAULT NULL,
+                  `User` int(11) DEFAULT NULL,
+                  `created_date` datetime DEFAULT NULL,
+                  `delivered_date` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `number` (`number`),
+                  KEY `User` (`User`),
+                  CONSTRAINT `Order_ibfk_1` FOREIGN KEY (`User`) REFERENCES `User` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Order_Element">
+                CREATE TABLE `Order_Element` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `Order` int(11) DEFAULT NULL,
+                  `Element` int(11) DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `Order` (`Order`),
+                  KEY `Element` (`Element`),
+                  CONSTRAINT `Order_Element_ibfk_1` FOREIGN KEY (`Order`) REFERENCES `Order` (`id`),
+                  CONSTRAINT `Order_Element_ibfk_2` FOREIGN KEY (`Element`) REFERENCES `Element` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=229 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="Product">
+                CREATE TABLE `Product` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `Category` int(11) DEFAULT NULL,
+                  `name` varchar(255) DEFAULT NULL,
+                  `description` text DEFAULT NULL,
+                  `price` decimal(10,2) DEFAULT NULL,
+                  `status` enum('available','unavailable') DEFAULT NULL,
+                  `image_path` varchar(255) DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `Category` (`Category`),
+                  CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`Category`) REFERENCES `Category` (`id`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+            <pma:table name="User">
+                CREATE TABLE `User` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) DEFAULT NULL,
+                  `first_name` varchar(255) DEFAULT NULL,
+                  `mail` varchar(255) DEFAULT NULL,
+                  `password` varchar(255) DEFAULT NULL,
+                  `role` enum('admin','preparer','reception') DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `mail` (`mail`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            </pma:table>
+        </pma:database>
+    </pma:structure_schemas>
+
+    <!--
+    - Base de données :  'projets_exam-back_cdacosta'
+    -->
+    <database name="projets_exam-back_cdacosta">
+        <!-- Table Account_manage -->
+        <table name="Account_manage">
+            <column name="id">1</column>
+            <column name="User">1</column>
+            <column name="date_token_mail">2024-08-31 17:11:42</column>
+            <column name="date_validation_mail">2024-08-25 12:04:00</column>
+            <column name="status">active</column>
+            <column name="token_reset_mdp">995716ecde7794452413f8e8c13802e8</column>
+            <column name="compteur_echec">0</column>
+            <column name="date_creation">2024-08-25 12:00:00</column>
+        </table>
+        <table name="Account_manage">
+            <column name="id">2</column>
+            <column name="User">3</column>
+            <column name="date_token_mail">2024-08-29 14:31:28</column>
+            <column name="date_validation_mail">NULL</column>
+            <column name="status">NULL</column>
+            <column name="token_reset_mdp">70bd115a81bd02a1e298fbca76d56417</column>
+            <column name="compteur_echec">NULL</column>
+            <column name="date_creation">2024-08-29 12:21:11</column>
+        </table>
+        <table name="Account_manage">
+            <column name="id">3</column>
+            <column name="User">4</column>
+            <column name="date_token_mail">2024-08-29 13:36:35</column>
+            <column name="date_validation_mail">NULL</column>
+            <column name="status">NULL</column>
+            <column name="token_reset_mdp">7f1b84f3cf94de401962947af87674d6</column>
+            <column name="compteur_echec">NULL</column>
+            <column name="date_creation">2024-08-29 13:36:17</column>
+        </table>
+        <!-- Table Category -->
+        <table name="Category">
+            <column name="id">1</column>
+            <column name="title">menus</column>
+            <column name="image_path">/categories/menus.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">2</column>
+            <column name="title">boissons</column>
+            <column name="image_path">/categories/boissons.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">3</column>
+            <column name="title">burgers</column>
+            <column name="image_path">/categories/burgers.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">4</column>
+            <column name="title">frites</column>
+            <column name="image_path">/categories/frites.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">5</column>
+            <column name="title">encas</column>
+            <column name="image_path">/categories/encas.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">6</column>
+            <column name="title">wraps</column>
+            <column name="image_path">/categories/wraps.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">7</column>
+            <column name="title">salades</column>
+            <column name="image_path">/categories/salades.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">8</column>
+            <column name="title">desserts</column>
+            <column name="image_path">/categories/desserts.png</column>
+        </table>
+        <table name="Category">
+            <column name="id">9</column>
+            <column name="title">sauces</column>
+            <column name="image_path">/categories/sauces.png</column>
+        </table>
+        <!-- Table Element -->
+        <table name="Element">
+            <column name="id">182</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">183</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">2</column>
+            <column name="price">1.90</column>
+        </table>
+        <table name="Element">
+            <column name="id">184</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">2</column>
+            <column name="price">3.20</column>
+        </table>
+        <table name="Element">
+            <column name="id">185</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">2</column>
+            <column name="price">2.30</column>
+        </table>
+        <table name="Element">
+            <column name="id">186</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">4.20</column>
+        </table>
+        <table name="Element">
+            <column name="id">187</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">4.40</column>
+        </table>
+        <table name="Element">
+            <column name="id">188</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">189</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">6.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">190</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">6.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">191</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">2.60</column>
+        </table>
+        <table name="Element">
+            <column name="id">192</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">2</column>
+            <column name="price">1.00</column>
+        </table>
+        <table name="Element">
+            <column name="id">193</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.00</column>
+        </table>
+        <table name="Element">
+            <column name="id">194</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">2.60</column>
+        </table>
+        <table name="Element">
+            <column name="id">195</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">196</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.00</column>
+        </table>
+        <table name="Element">
+            <column name="id">197</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">2</column>
+            <column name="price">6.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">198</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">5</column>
+            <column name="price">3.10</column>
+        </table>
+        <table name="Element">
+            <column name="id">199</column>
+            <column name="type">menu</column>
+            <column name="size_menu">normal</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">200</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">1</column>
+            <column name="price">1.90</column>
+        </table>
+        <table name="Element">
+            <column name="id">201</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">2.60</column>
+        </table>
+        <table name="Element">
+            <column name="id">202</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">2</column>
+            <column name="price">1.90</column>
+        </table>
+        <table name="Element">
+            <column name="id">203</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">204</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">4.20</column>
+        </table>
+        <table name="Element">
+            <column name="id">205</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">206</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.30</column>
+        </table>
+        <table name="Element">
+            <column name="id">207</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">208</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.10</column>
+        </table>
+        <table name="Element">
+            <column name="id">209</column>
+            <column name="type">menu</column>
+            <column name="size_menu">normal</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">10.60</column>
+        </table>
+        <table name="Element">
+            <column name="id">210</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">2.75</column>
+        </table>
+        <table name="Element">
+            <column name="id">211</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.10</column>
+        </table>
+        <table name="Element">
+            <column name="id">212</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.30</column>
+        </table>
+        <table name="Element">
+            <column name="id">213</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.10</column>
+        </table>
+        <table name="Element">
+            <column name="id">214</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">1</column>
+            <column name="price">1.90</column>
+        </table>
+        <table name="Element">
+            <column name="id">215</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">50Cl</column>
+            <column name="quantity">2</column>
+            <column name="price">1.90</column>
+        </table>
+        <table name="Element">
+            <column name="id">216</column>
+            <column name="type">menu</column>
+            <column name="size_menu">maxi</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">8.80</column>
+        </table>
+        <table name="Element">
+            <column name="id">217</column>
+            <column name="type">item</column>
+            <column name="size_menu">NULL</column>
+            <column name="size_item">NULL</column>
+            <column name="quantity">1</column>
+            <column name="price">3.30</column>
+        </table>
+        <!-- Table Element_Product -->
+        <table name="Element_Product">
+            <column name="id">133</column>
+            <column name="Element">182</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">134</column>
+            <column name="Element">182</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">135</column>
+            <column name="Element">182</column>
+            <column name="Product">37</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">136</column>
+            <column name="Element">182</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">137</column>
+            <column name="Element">183</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">138</column>
+            <column name="Element">184</column>
+            <column name="Product">41</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">139</column>
+            <column name="Element">185</column>
+            <column name="Product">34</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">140</column>
+            <column name="Element">186</column>
+            <column name="Product">42</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">141</column>
+            <column name="Element">186</column>
+            <column name="Product">54</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">142</column>
+            <column name="Element">187</column>
+            <column name="Product">50</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">143</column>
+            <column name="Element">188</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">144</column>
+            <column name="Element">188</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">145</column>
+            <column name="Element">188</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">146</column>
+            <column name="Element">189</column>
+            <column name="Product">14</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">147</column>
+            <column name="Element">190</column>
+            <column name="Product">14</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">148</column>
+            <column name="Element">191</column>
+            <column name="Product">44</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">150</column>
+            <column name="Element">192</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">151</column>
+            <column name="Element">193</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">152</column>
+            <column name="Element">193</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">153</column>
+            <column name="Element">193</column>
+            <column name="Product">37</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">154</column>
+            <column name="Element">193</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">155</column>
+            <column name="Element">194</column>
+            <column name="Product">65</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">156</column>
+            <column name="Element">195</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">157</column>
+            <column name="Element">195</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">158</column>
+            <column name="Element">195</column>
+            <column name="Product">60</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">159</column>
+            <column name="Element">195</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">160</column>
+            <column name="Element">196</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">161</column>
+            <column name="Element">196</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">162</column>
+            <column name="Element">196</column>
+            <column name="Product">35</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">163</column>
+            <column name="Element">196</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">164</column>
+            <column name="Element">197</column>
+            <column name="Product">14</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">165</column>
+            <column name="Element">198</column>
+            <column name="Product">63</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">166</column>
+            <column name="Element">199</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">167</column>
+            <column name="Element">199</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">168</column>
+            <column name="Element">199</column>
+            <column name="Product">35</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">169</column>
+            <column name="Element">199</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">170</column>
+            <column name="Element">200</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">171</column>
+            <column name="Element">201</column>
+            <column name="Product">40</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">172</column>
+            <column name="Element">202</column>
+            <column name="Product">28</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">173</column>
+            <column name="Element">203</column>
+            <column name="Product">62</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">174</column>
+            <column name="Element">204</column>
+            <column name="Product">42</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">175</column>
+            <column name="Element">204</column>
+            <column name="Product">54</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">176</column>
+            <column name="Element">205</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">177</column>
+            <column name="Element">205</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">178</column>
+            <column name="Element">205</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">179</column>
+            <column name="Element">206</column>
+            <column name="Product">64</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">180</column>
+            <column name="Element">207</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">181</column>
+            <column name="Element">207</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">182</column>
+            <column name="Element">207</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">183</column>
+            <column name="Element">208</column>
+            <column name="Product">45</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">184</column>
+            <column name="Element">209</column>
+            <column name="Product">2</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">185</column>
+            <column name="Element">209</column>
+            <column name="Product">53</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">186</column>
+            <column name="Element">209</column>
+            <column name="Product">35</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">187</column>
+            <column name="Element">209</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">188</column>
+            <column name="Element">210</column>
+            <column name="Product">36</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">189</column>
+            <column name="Element">211</column>
+            <column name="Product">46</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">190</column>
+            <column name="Element">212</column>
+            <column name="Product">60</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">191</column>
+            <column name="Element">213</column>
+            <column name="Product">45</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">192</column>
+            <column name="Element">214</column>
+            <column name="Product">28</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">193</column>
+            <column name="Element">215</column>
+            <column name="Product">27</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">194</column>
+            <column name="Element">216</column>
+            <column name="Product">1</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">195</column>
+            <column name="Element">216</column>
+            <column name="Product">54</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">196</column>
+            <column name="Element">216</column>
+            <column name="Product">37</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">197</column>
+            <column name="Element">216</column>
+            <column name="Product">28</column>
+        </table>
+        <table name="Element_Product">
+            <column name="id">198</column>
+            <column name="Element">217</column>
+            <column name="Product">60</column>
+        </table>
+        <!-- Table Order -->
+        <table name="Order">
+            <column name="id">141</column>
+            <column name="number">2024-080001</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">19.00</column>
+            <column name="status">delivered</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-28 17:31:57</column>
+            <column name="delivered_date">2024-09-02 10:23:13</column>
+        </table>
+        <table name="Order">
+            <column name="id">142</column>
+            <column name="number">55</column>
+            <column name="place_number">532</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">23.50</column>
+            <column name="status">delivered</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-08-30 09:06:11</column>
+            <column name="delivered_date">2024-09-01 10:36:55</column>
+        </table>
+        <table name="Order">
+            <column name="id">143</column>
+            <column name="number">31</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">6.80</column>
+            <column name="status">delivered</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-08-30 09:06:35</column>
+            <column name="delivered_date">2024-09-02 10:22:29</column>
+        </table>
+        <table name="Order">
+            <column name="id">144</column>
+            <column name="number">28</column>
+            <column name="place_number">255</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">6.80</column>
+            <column name="status">delivered</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-08-30 14:06:29</column>
+            <column name="delivered_date">2024-09-01 10:39:22</column>
+        </table>
+        <table name="Order">
+            <column name="id">145</column>
+            <column name="number">2024-080029</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">2.60</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-31 13:41:22</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">146</column>
+            <column name="number">2024-080030</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">2.00</column>
+            <column name="status">inProgress</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-31 13:46:43</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">147</column>
+            <column name="number">2024-080031</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">2.00</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-31 13:50:12</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">148</column>
+            <column name="number">2024-080032</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">8.00</column>
+            <column name="status">canceled</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-31 13:51:49</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">149</column>
+            <column name="number">84</column>
+            <column name="place_number">910</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">11.90</column>
+            <column name="status">inProgress</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-08-31 14:08:06</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">150</column>
+            <column name="number">2024-080085</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">8.00</column>
+            <column name="status">inProgress</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-08-31 14:29:56</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">151</column>
+            <column name="number">2024-090086</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">13.60</column>
+            <column name="status">prepared</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-09-01 11:18:43</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">152</column>
+            <column name="number">2024-090087</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">24.30</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-09-01 11:42:13</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">153</column>
+            <column name="number">2024-090088</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">1.90</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-09-01 11:42:33</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">154</column>
+            <column name="number">82</column>
+            <column name="place_number">534</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">2.60</column>
+            <column name="status">standby</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-09-01 18:34:53</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">155</column>
+            <column name="number">46</column>
+            <column name="place_number">975</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">27.10</column>
+            <column name="status">delivered</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-09-01 18:40:53</column>
+            <column name="delivered_date">2024-09-02 12:15:19</column>
+        </table>
+        <table name="Order">
+            <column name="id">156</column>
+            <column name="number">22</column>
+            <column name="place_number">450</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">12.60</column>
+            <column name="status">standby</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-09-02 10:33:33</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">157</column>
+            <column name="number">2024-090023</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">13.70</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-09-02 10:34:39</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">158</column>
+            <column name="number">96</column>
+            <column name="place_number">255</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">2.75</column>
+            <column name="status">standby</column>
+            <column name="User">NULL</column>
+            <column name="created_date">2024-09-02 10:35:40</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">159</column>
+            <column name="number">2024-090097</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">takeOut</column>
+            <column name="amount">24.00</column>
+            <column name="status">standby</column>
+            <column name="User">1</column>
+            <column name="created_date">2024-09-02 11:55:28</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <table name="Order">
+            <column name="id">160</column>
+            <column name="number">2024-090098</column>
+            <column name="place_number">NULL</column>
+            <column name="orderType">eatIn</column>
+            <column name="amount">3.30</column>
+            <column name="status">standby</column>
+            <column name="User">4</column>
+            <column name="created_date">2024-09-02 12:15:12</column>
+            <column name="delivered_date">NULL</column>
+        </table>
+        <!-- Table Order_Element -->
+        <table name="Order_Element">
+            <column name="id">192</column>
+            <column name="Order">141</column>
+            <column name="Element">182</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">193</column>
+            <column name="Order">141</column>
+            <column name="Element">183</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">194</column>
+            <column name="Order">141</column>
+            <column name="Element">184</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">195</column>
+            <column name="Order">142</column>
+            <column name="Element">185</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">196</column>
+            <column name="Order">142</column>
+            <column name="Element">186</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">197</column>
+            <column name="Order">142</column>
+            <column name="Element">187</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">198</column>
+            <column name="Order">142</column>
+            <column name="Element">188</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">199</column>
+            <column name="Order">143</column>
+            <column name="Element">189</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">200</column>
+            <column name="Order">144</column>
+            <column name="Element">190</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">201</column>
+            <column name="Order">145</column>
+            <column name="Element">191</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">203</column>
+            <column name="Order">147</column>
+            <column name="Element">192</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">204</column>
+            <column name="Order">148</column>
+            <column name="Element">193</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">205</column>
+            <column name="Order">149</column>
+            <column name="Element">194</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">206</column>
+            <column name="Order">149</column>
+            <column name="Element">195</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">207</column>
+            <column name="Order">150</column>
+            <column name="Element">196</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">208</column>
+            <column name="Order">151</column>
+            <column name="Element">197</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">209</column>
+            <column name="Order">152</column>
+            <column name="Element">198</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">210</column>
+            <column name="Order">152</column>
+            <column name="Element">199</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">211</column>
+            <column name="Order">153</column>
+            <column name="Element">200</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">212</column>
+            <column name="Order">154</column>
+            <column name="Element">201</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">213</column>
+            <column name="Order">155</column>
+            <column name="Element">202</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">214</column>
+            <column name="Order">155</column>
+            <column name="Element">203</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">215</column>
+            <column name="Order">155</column>
+            <column name="Element">204</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">216</column>
+            <column name="Order">155</column>
+            <column name="Element">205</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">217</column>
+            <column name="Order">156</column>
+            <column name="Element">206</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">218</column>
+            <column name="Order">156</column>
+            <column name="Element">207</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">219</column>
+            <column name="Order">157</column>
+            <column name="Element">208</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">220</column>
+            <column name="Order">157</column>
+            <column name="Element">209</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">221</column>
+            <column name="Order">158</column>
+            <column name="Element">210</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">222</column>
+            <column name="Order">159</column>
+            <column name="Element">211</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">223</column>
+            <column name="Order">159</column>
+            <column name="Element">212</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">224</column>
+            <column name="Order">159</column>
+            <column name="Element">213</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">225</column>
+            <column name="Order">159</column>
+            <column name="Element">214</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">226</column>
+            <column name="Order">159</column>
+            <column name="Element">215</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">227</column>
+            <column name="Order">159</column>
+            <column name="Element">216</column>
+        </table>
+        <table name="Order_Element">
+            <column name="id">228</column>
+            <column name="Order">160</column>
+            <column name="Element">217</column>
+        </table>
+        <!-- Table Product -->
+        <table name="Product">
+            <column name="id">1</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Le 280</column>
+            <column name="description"></column>
+            <column name="price">8.80</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/280.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">2</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Big Tasty</column>
+            <column name="description"></column>
+            <column name="price">10.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIG_TASTY_1_VIANDE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">3</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Big Tasty Bacon</column>
+            <column name="description"></column>
+            <column name="price">10.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIG_TASTY_BACON_1_VIANDE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">4</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Big Mac</column>
+            <column name="description"></column>
+            <column name="price">8.00</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIGMAC.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">5</column>
+            <column name="Category">1</column>
+            <column name="name">Menu CBO</column>
+            <column name="description">NULL</column>
+            <column name="price">10.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/CBO.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">6</column>
+            <column name="Category">1</column>
+            <column name="name">Menu MC Chicken</column>
+            <column name="description"></column>
+            <column name="price">9.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCCHICKEN.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">7</column>
+            <column name="Category">1</column>
+            <column name="name">Menu MC Crispy</column>
+            <column name="description"></column>
+            <column name="price">7.20</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCCRISPY.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">8</column>
+            <column name="Category">1</column>
+            <column name="name">Menu MC Fish</column>
+            <column name="description"></column>
+            <column name="price">7.20</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCFISH.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">9</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Royal Bacon</column>
+            <column name="description"></column>
+            <column name="price">7.05</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALBACON.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">10</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Royal Cheese</column>
+            <column name="description"></column>
+            <column name="price">6.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALCHEESE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">11</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Royal Deluxe</column>
+            <column name="description"></column>
+            <column name="price">7.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALDELUXE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">12</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Signature BBQ Beef 2 viandes</column>
+            <column name="description"></column>
+            <column name="price">13.50</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/SIGNATURE_BBQ_BEEF_(2_VIANDES).png</column>
+        </table>
+        <table name="Product">
+            <column name="id">13</column>
+            <column name="Category">1</column>
+            <column name="name">Menu Signature Beef BBQ</column>
+            <column name="description"></column>
+            <column name="price">11.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/SIGNATURE_BEEF_BBQ_BURGER_(1_VIANDE).png</column>
+        </table>
+        <table name="Product">
+            <column name="id">14</column>
+            <column name="Category">3</column>
+            <column name="name">Le 280</column>
+            <column name="description"></column>
+            <column name="price">6.80</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/280.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">15</column>
+            <column name="Category">3</column>
+            <column name="name">Big Tasty</column>
+            <column name="description"></column>
+            <column name="price">8.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIG_TASTY_1_VIANDE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">16</column>
+            <column name="Category">3</column>
+            <column name="name">Big Tasty Bacon</column>
+            <column name="description"></column>
+            <column name="price">8.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIG_TASTY_BACON_1_VIANDE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">17</column>
+            <column name="Category">3</column>
+            <column name="name">Big Mac</column>
+            <column name="description"></column>
+            <column name="price">6.00</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/BIGMAC.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">18</column>
+            <column name="Category">3</column>
+            <column name="name">CBO</column>
+            <column name="description"></column>
+            <column name="price">8.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/CBO.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">19</column>
+            <column name="Category">3</column>
+            <column name="name">MC Chicken</column>
+            <column name="description"></column>
+            <column name="price">7.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCCHICKEN.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">20</column>
+            <column name="Category">3</column>
+            <column name="name">MC Crispy</column>
+            <column name="description"></column>
+            <column name="price">5.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCCRISPY.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">21</column>
+            <column name="Category">3</column>
+            <column name="name">MC Fish</column>
+            <column name="description"></column>
+            <column name="price">4.85</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/MCFISH.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">22</column>
+            <column name="Category">3</column>
+            <column name="name">Royal Bacon</column>
+            <column name="description"></column>
+            <column name="price">5.10</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALBACON.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">23</column>
+            <column name="Category">3</column>
+            <column name="name">Royal Cheese</column>
+            <column name="description"></column>
+            <column name="price">4.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALCHEESE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">24</column>
+            <column name="Category">3</column>
+            <column name="name">Royal Deluxe</column>
+            <column name="description"></column>
+            <column name="price">5.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/ROYALDELUXE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">25</column>
+            <column name="Category">3</column>
+            <column name="name">Signature BBQ Beef 2 viandes</column>
+            <column name="description"></column>
+            <column name="price">11.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/SIGNATURE_BBQ_BEEF_(2_VIANDES).png</column>
+        </table>
+        <table name="Product">
+            <column name="id">26</column>
+            <column name="Category">3</column>
+            <column name="name">Signature Beef BBQ</column>
+            <column name="description"></column>
+            <column name="price">10.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/burgers/SIGNATURE_BEEF_BBQ_BURGER_(1_VIANDE).png</column>
+        </table>
+        <table name="Product">
+            <column name="id">27</column>
+            <column name="Category">2</column>
+            <column name="name">Coca Cola</column>
+            <column name="description"></column>
+            <column name="price">1.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/coca-cola.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">28</column>
+            <column name="Category">2</column>
+            <column name="name">Coca Sans Sucres</column>
+            <column name="description"></column>
+            <column name="price">1.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/coca-sans-sucres.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">29</column>
+            <column name="Category">2</column>
+            <column name="name">Eau</column>
+            <column name="description"></column>
+            <column name="price">1.00</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/eau.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">30</column>
+            <column name="Category">2</column>
+            <column name="name">Fanta Orange</column>
+            <column name="description"></column>
+            <column name="price">1.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/fanta.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">31</column>
+            <column name="Category">2</column>
+            <column name="name">Ice Tea Pêche</column>
+            <column name="description"></column>
+            <column name="price">1.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/ice-tea-peche.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">32</column>
+            <column name="Category">2</column>
+            <column name="name">Ice Tea Citron</column>
+            <column name="description"></column>
+            <column name="price">1.90</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/the-vert-citron-sans-sucres.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">33</column>
+            <column name="Category">2</column>
+            <column name="name">Jus d'Orange</column>
+            <column name="description"></column>
+            <column name="price">2.10</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/jus-orange.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">34</column>
+            <column name="Category">2</column>
+            <column name="name">Jus de Pommes Bio</column>
+            <column name="description"></column>
+            <column name="price">2.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/boissons/jus-pomme-bio.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">35</column>
+            <column name="Category">4</column>
+            <column name="name">Petite Frite</column>
+            <column name="description"></column>
+            <column name="price">1.45</column>
+            <column name="status">available</column>
+            <column name="image_path">/frites/PETITE_FRITE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">36</column>
+            <column name="Category">4</column>
+            <column name="name">Moyenne Frite</column>
+            <column name="description"></column>
+            <column name="price">2.75</column>
+            <column name="status">available</column>
+            <column name="image_path">/frites/MOYENNE_FRITE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">37</column>
+            <column name="Category">4</column>
+            <column name="name">Grande Frite</column>
+            <column name="description"></column>
+            <column name="price">3.50</column>
+            <column name="status">available</column>
+            <column name="image_path">/frites/GRANDE_FRITE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">38</column>
+            <column name="Category">4</column>
+            <column name="name">Potatoes</column>
+            <column name="description"></column>
+            <column name="price">2.15</column>
+            <column name="status">available</column>
+            <column name="image_path">/frites/POTATOES.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">39</column>
+            <column name="Category">4</column>
+            <column name="name">Grande Potatoes</column>
+            <column name="description"></column>
+            <column name="price">3.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/frites/GRANDE_POTATOES.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">40</column>
+            <column name="Category">5</column>
+            <column name="name">Cheeseburger</column>
+            <column name="description"></column>
+            <column name="price">2.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/encas/cheeseburger.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">41</column>
+            <column name="Category">5</column>
+            <column name="name">Croc MCdo</column>
+            <column name="description"></column>
+            <column name="price">3.20</column>
+            <column name="status">available</column>
+            <column name="image_path">/encas/croc-mc-do.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">42</column>
+            <column name="Category">5</column>
+            <column name="name">Nuggets x4</column>
+            <column name="description"></column>
+            <column name="price">4.20</column>
+            <column name="status">available</column>
+            <column name="image_path">/encas/nuggets_4.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">43</column>
+            <column name="Category">5</column>
+            <column name="name">Nuggets x20</column>
+            <column name="description"></column>
+            <column name="price">13.00</column>
+            <column name="status">available</column>
+            <column name="image_path">/encas/nuggets_20.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">44</column>
+            <column name="Category">8</column>
+            <column name="name">Brownie</column>
+            <column name="description"></column>
+            <column name="price">2.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/brownies.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">45</column>
+            <column name="Category">8</column>
+            <column name="name">Cheesecake chocolat M et M'S</column>
+            <column name="description"></column>
+            <column name="price">3.10</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/cheesecake_choconuts_M_M_s.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">46</column>
+            <column name="Category">8</column>
+            <column name="name">Cheesecake Fraise</column>
+            <column name="description"></column>
+            <column name="price">3.10</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/cheesecake_fraise.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">47</column>
+            <column name="Category">8</column>
+            <column name="name">Cookie</column>
+            <column name="description"></column>
+            <column name="price">3.20</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/cookie.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">48</column>
+            <column name="Category">8</column>
+            <column name="name">Donut</column>
+            <column name="description"></column>
+            <column name="price">2.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/doghnut.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">49</column>
+            <column name="Category">8</column>
+            <column name="name">Macarons</column>
+            <column name="description"></column>
+            <column name="price">2.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/macarons.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">50</column>
+            <column name="Category">8</column>
+            <column name="name">MC Fleury</column>
+            <column name="description"></column>
+            <column name="price">4.40</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/MCFleury.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">51</column>
+            <column name="Category">8</column>
+            <column name="name">Muffin</column>
+            <column name="description"></column>
+            <column name="price">3.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/muffin.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">52</column>
+            <column name="Category">8</column>
+            <column name="name">Sunday</column>
+            <column name="description"></column>
+            <column name="price">1.00</column>
+            <column name="status">available</column>
+            <column name="image_path">/desserts/sunday.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">53</column>
+            <column name="Category">9</column>
+            <column name="name">Classic Barbecue</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/classic-barbecue.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">54</column>
+            <column name="Category">9</column>
+            <column name="name">Classic Moutarde</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/classic-moutarde.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">55</column>
+            <column name="Category">9</column>
+            <column name="name">Creamy Deluxe</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/cremy-deluxe.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">56</column>
+            <column name="Category">9</column>
+            <column name="name">Ketchup</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/ketchup.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">57</column>
+            <column name="Category">9</column>
+            <column name="name">Chinoise</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/sauce-chinoise.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">58</column>
+            <column name="Category">9</column>
+            <column name="name">Curry</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/sauce-curry.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">59</column>
+            <column name="Category">9</column>
+            <column name="name">Pommes Frites</column>
+            <column name="description"></column>
+            <column name="price">0.70</column>
+            <column name="status">available</column>
+            <column name="image_path">/sauces/sauce-pommes-frite.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">60</column>
+            <column name="Category">7</column>
+            <column name="name">Petite Salade</column>
+            <column name="description"></column>
+            <column name="price">3.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/salades/PETITE-SALADE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">61</column>
+            <column name="Category">7</column>
+            <column name="name">Cesar Classic</column>
+            <column name="description"></column>
+            <column name="price">8.80</column>
+            <column name="status">available</column>
+            <column name="image_path">/salades/SALADE_CLASSIC_CAESAR.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">62</column>
+            <column name="Category">7</column>
+            <column name="name">Italienne Mozza</column>
+            <column name="description"></column>
+            <column name="price">8.80</column>
+            <column name="status">available</column>
+            <column name="image_path">/salades/SALADE_ITALIAN_MOZZA.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">63</column>
+            <column name="Category">6</column>
+            <column name="name">MC Wrap chevre</column>
+            <column name="description"></column>
+            <column name="price">3.10</column>
+            <column name="status">available</column>
+            <column name="image_path">/wraps/mcwrap-chevre.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">64</column>
+            <column name="Category">6</column>
+            <column name="name">MC Wrap Poulet Bacon</column>
+            <column name="description"></column>
+            <column name="price">3.30</column>
+            <column name="status">available</column>
+            <column name="image_path">/wraps/MCWRAP-POULET-BACON.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">65</column>
+            <column name="Category">6</column>
+            <column name="name">Ptit Wrap Chevre</column>
+            <column name="description"></column>
+            <column name="price">2.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/wraps/PTIT_WRAP_CHEVRE.png</column>
+        </table>
+        <table name="Product">
+            <column name="id">66</column>
+            <column name="Category">6</column>
+            <column name="name">Ptit Wrap Ranch</column>
+            <column name="description"></column>
+            <column name="price">2.60</column>
+            <column name="status">available</column>
+            <column name="image_path">/wraps/PTIT_WRAP_RANCH.png</column>
+        </table>
+        <!-- Table User -->
+        <table name="User">
+            <column name="id">1</column>
+            <column name="name">Ronald</column>
+            <column name="first_name">Mac</column>
+            <column name="mail">ronald@test.fr</column>
+            <column name="password">$2y$10$evNYDhKIyKtOyvq02usSc./6lUjESv58NXFEFN8G0.oJhNk446tOO</column>
+            <column name="role">admin</column>
+        </table>
+        <table name="User">
+            <column name="id">3</column>
+            <column name="name">Christian</column>
+            <column name="first_name">Durand</column>
+            <column name="mail">christian@wacdo.fr</column>
+            <column name="password">$2y$10$lpSzqc0i08f6TKbBgHGjku7U.XEditJ.jtxoUNgWVdWRu8/cJJPwa</column>
+            <column name="role">preparer</column>
+        </table>
+        <table name="User">
+            <column name="id">4</column>
+            <column name="name">Christelle</column>
+            <column name="first_name">Fruzte</column>
+            <column name="mail">christelle@wacdo.fr</column>
+            <column name="password">$2y$10$8XCOjvgh7NZprVQUBQwWNORa9WN456U4RFtUprbJiRveCr/JuUjDa</column>
+            <column name="role">reception</column>
+        </table>
+    </database>
+</pma_xml_export>
